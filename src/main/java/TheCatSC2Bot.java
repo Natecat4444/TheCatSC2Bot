@@ -72,9 +72,29 @@ public class TheCatSC2Bot {
                 case PROTOSS_NEXUS:
                     actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
                     break;
+                case PROTOSS_PROBE:
+                    findNearestMineralPatch(unit.getPosition().toPoint2d()).ifPresent(mineralPath -> actions().unitCommand(unit, Abilities.SMART, mineralPath, false));
+                    break;
                 default:
                     break;
             }
+        }
+
+        private Optional<Unit> findNearestMineralPatch(Point2d start){
+            List<UnitInPool> units = observation().getUnits(Alliance.NEUTRAL);
+            double distance = Double.MAX_VALUE;
+            Unit target = null;
+            for (UnitInPool unitInPool : units) {
+                Unit unit = unitInPool.unit();
+                if(unit.getType().equals(Units.NEUTRAL_MINERAL_FIELD)) {
+                    double d = unit.getPosition().toPoint2d().distance(start);
+                    if (d < distance) {
+                        distance = d;
+                        target = unit;
+                    }
+                }
+            }
+            return Optional.ofNullable(target);
         }
 
         private float getRandomScalar(){
