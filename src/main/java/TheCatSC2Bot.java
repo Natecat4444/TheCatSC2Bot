@@ -19,6 +19,9 @@ import java.util.function.Predicate;
 
 public class TheCatSC2Bot {
     private static class Bot extends S2Agent {
+
+        private final int zealots = 15;
+
         @Override
         public void onGameStart(){
             System.out.println("THE CATS OF THE VOID WILL CLAIM ALL");
@@ -28,6 +31,9 @@ public class TheCatSC2Bot {
         public void onStep(){
 //            System.out.println(observation().getGameLoop());
             tryBuildPylon();
+            tryBuildGateway();
+            tryBuildCybercore();
+            tryBuildForge();
         }
 
         private boolean tryBuildPylon() {
@@ -40,6 +46,37 @@ public class TheCatSC2Bot {
             }
 
             return tryBuildStructure(Abilities.BUILD_PYLON, Units.PROTOSS_PROBE);
+        }
+
+        private boolean tryBuildGateway(){
+            if (countUnitType(Units.PROTOSS_PYLON) < 1){
+                return false;
+            }
+
+            if(countUnitType(Units.PROTOSS_GATEWAY) > 0){
+                return false;
+            }
+
+            return tryBuildStructure(Abilities.BUILD_GATEWAY, Units.PROTOSS_PROBE);
+        }
+
+        private boolean tryBuildCybercore(){
+            if (countUnitType(Units.PROTOSS_GATEWAY) + countUnitType(Units.PROTOSS_WARP_GATE) < 1){
+                return false;
+            }
+            if(countUnitType(Units.PROTOSS_CYBERNETICS_CORE) > 0){
+                return false;
+            }
+
+            return tryBuildStructure(Abilities.BUILD_CYBERNETICS_CORE, Units.PROTOSS_PROBE);
+        }
+
+        private boolean tryBuildForge(){
+            if(countUnitType(Units.PROTOSS_FORGE) >= 1){
+                return false;
+            }
+
+            return tryBuildStructure(Abilities.BUILD_FORGE, Units.PROTOSS_PROBE);
         }
 
         private boolean tryBuildStructure(Ability ability, UnitType unitType){
@@ -75,6 +112,8 @@ public class TheCatSC2Bot {
                 case PROTOSS_PROBE:
                     findNearestMineralPatch(unit.getPosition().toPoint2d()).ifPresent(mineralPath -> actions().unitCommand(unit, Abilities.SMART, mineralPath, false));
                     break;
+                case PROTOSS_ASSIMILATOR:
+                    break;
                 default:
                     break;
             }
@@ -99,6 +138,10 @@ public class TheCatSC2Bot {
 
         private float getRandomScalar(){
             return ThreadLocalRandom.current().nextFloat() *2 -1;
+        }
+
+        private int countUnitType(Units unitType){
+            return observation().getUnits(Alliance.SELF, UnitInPool.isUnit(unitType)).size();
         }
     }
     public static void main(String[] args) {
