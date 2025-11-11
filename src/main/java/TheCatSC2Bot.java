@@ -20,7 +20,10 @@ import java.util.function.Predicate;
 public class TheCatSC2Bot {
     private static class Bot extends S2Agent {
 
-        private final int zealots = 15;
+        private final int zealotsMax = 25;
+        private final int stalkersMax = 20;
+        private final int immortalsMax = 5;
+        private boolean warpgate = false;
 
         @Override
         public void onGameStart(){
@@ -114,8 +117,47 @@ public class TheCatSC2Bot {
                     break;
                 case PROTOSS_ASSIMILATOR:
                     break;
+                case PROTOSS_CYBERNETICS_CORE:
+                    if(!warpgate){
+                        actions().unitCommand(unit, Abilities.RESEARCH_WARP_GATE, false);
+                    }
+                    break;
+                case PROTOSS_WARP_GATE:
+                    warpUnit(unit);
+                    break;
+                case PROTOSS_GATEWAY:
+                    if(warpgate){
+                        actions().unitCommand(unit, Abilities.MORPH_WARP_GATE, false);
+                    }
+                    else{
+                        trainUnit(unit);
+                    }
                 default:
                     break;
+            }
+        }
+
+        private void trainUnit(Unit unit){
+            if(countUnitType(Units.PROTOSS_ZEALOT) < zealotsMax){
+                actions().unitCommand(unit, Abilities.TRAIN_ZEALOT, false);
+            }
+            else if(countUnitType(Units.PROTOSS_STALKER) < stalkersMax){
+                actions().unitCommand(unit, Abilities.TRAIN_STALKER, false);
+            }
+//            else if (countUnitType(Units.PROTOSS_IMMORTAL) < immortalsMax) {
+//                actions().unitCommand(unit, Abilities.TRAIN_ZEALOT, false);
+//            }
+        }
+
+        private void warpUnit(Unit unit){
+            if(countUnitType(Units.PROTOSS_ZEALOT) < zealotsMax){
+                //todo
+            }
+            else if(countUnitType(Units.PROTOSS_STALKER) < stalkersMax){
+                //todo
+            }
+            else if (countUnitType(Units.PROTOSS_IMMORTAL) < immortalsMax) {
+                //todo
             }
         }
 
