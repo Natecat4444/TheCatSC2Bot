@@ -71,7 +71,7 @@ public class TheCatSC2Bot {
                 return false;
             }
 
-            if(countUnitType(Units.PROTOSS_GATEWAY) > 3){
+            if(countUnitType(Units.PROTOSS_GATEWAY) + countUnitType(Units.PROTOSS_WARP_GATE) >= 4){
                 return false;
             }
 
