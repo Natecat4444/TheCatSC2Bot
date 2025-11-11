@@ -37,6 +37,7 @@ public class TheCatSC2Bot {
             tryBuildGateway();
             tryBuildCybercore();
             tryBuildForge();
+            tryBuildTwilightCouncil();
         }
 
         private boolean tryBuildPylon() {
@@ -56,7 +57,7 @@ public class TheCatSC2Bot {
                 return false;
             }
 
-            if(countUnitType(Units.PROTOSS_GATEWAY) > 0){
+            if(countUnitType(Units.PROTOSS_GATEWAY) > 3){
                 return false;
             }
 
@@ -80,6 +81,18 @@ public class TheCatSC2Bot {
             }
 
             return tryBuildStructure(Abilities.BUILD_FORGE, Units.PROTOSS_PROBE);
+        }
+
+        private boolean tryBuildTwilightCouncil(){
+            if(countUnitType(Units.PROTOSS_CYBERNETICS_CORE) > 0){
+                return false;
+            }
+
+            if(countUnitType(Units.PROTOSS_TWILIGHT_COUNCIL) > 0){
+                return false;
+            }
+
+            return tryBuildStructure(Abilities.BUILD_TWILIGHT_COUNCIL, Units.PROTOSS_PROBE);
         }
 
         private boolean tryBuildStructure(Ability ability, UnitType unitType){
