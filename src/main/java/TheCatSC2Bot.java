@@ -123,7 +123,9 @@ public class TheCatSC2Bot {
             Unit unit = unitInPool.unit();
             switch ((Units) unit.getType()){
                 case PROTOSS_NEXUS:
-                    actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
+                    if(unit.getIdealHarvesters().get() > unit.getAssignedHarvesters().get()) {
+                        actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
+                    }
                     break;
                 case PROTOSS_PROBE:
                     findNearestMineralPatch(unit.getPosition().toPoint2d()).ifPresent(mineralPath -> actions().unitCommand(unit, Abilities.SMART, mineralPath, false));
