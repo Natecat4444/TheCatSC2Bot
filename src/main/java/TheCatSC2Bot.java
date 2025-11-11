@@ -38,6 +38,7 @@ public class TheCatSC2Bot {
             tryBuildCybercore();
             tryBuildForge();
             tryBuildTwilightCouncil();
+            tryBuildAssimilator();
         }
 
         private boolean tryBuildPylon() {
@@ -50,6 +51,19 @@ public class TheCatSC2Bot {
             }
 
             return tryBuildStructure(Abilities.BUILD_PYLON, Units.PROTOSS_PROBE);
+        }
+
+        private void tryBuildAssimilator(){
+            if(countUnitType(Units.PROTOSS_ASSIMILATOR) >= countUnitType(Units.PROTOSS_NEXUS)*2){
+                return;
+            }
+
+            Optional<UnitInPool> unitInPool = getRandomUnit(Units.PROTOSS_PROBE);
+            if(unitInPool.isPresent()){
+                Unit unit = unitInPool.get().unit();
+                findNearestGasGeyser(unit.getPosition().toPoint2d()).ifPresent(gasPath -> actions().unitCommand(unit, Abilities.BUILD_ASSIMILATOR, gasPath, false));
+            }
+
         }
 
         private boolean tryBuildGateway(){
@@ -159,9 +173,6 @@ public class TheCatSC2Bot {
             else if(countUnitType(Units.PROTOSS_STALKER) < stalkersMax){
                 actions().unitCommand(unit, Abilities.TRAIN_STALKER, false);
             }
-//            else if (countUnitType(Units.PROTOSS_IMMORTAL) < immortalsMax) {
-//                actions().unitCommand(unit, Abilities.TRAIN_ZEALOT, false);
-//            }
         }
 
         private void warpUnit(Unit unit){
@@ -192,6 +203,24 @@ public class TheCatSC2Bot {
             }
             return Optional.ofNullable(target);
         }
+
+        private Optional<Unit> findNearestGasGeyser(Point2d start){
+            List<UnitInPool> units = observation().getUnits(Alliance.NEUTRAL);
+            double distance = Double.MAX_VALUE;
+            Unit target = null;
+            for (UnitInPool unitInPool : units) {
+                Unit unit = unitInPool.unit();
+                if(unit.getType().equals(Units.NEUTRAL_VESPENE_GEYSER)) {
+                    double d = unit.getPosition().toPoint2d().distance(start);
+                    if (d < distance) {
+                        distance = d;
+                        target = unit;
+                    }
+                }
+            }
+            return Optional.ofNullable(target);
+        }
+
 
         private float getRandomScalar(){
             return ThreadLocalRandom.current().nextFloat() *2 -1;
