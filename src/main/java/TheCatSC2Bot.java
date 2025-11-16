@@ -8,12 +8,13 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.BattlenetMap;
 import com.github.ocraft.s2client.protocol.game.Difficulty;
 import com.github.ocraft.s2client.protocol.game.Race;
+import com.github.ocraft.s2client.protocol.game.raw.StartRaw;
+import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Unit;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
@@ -23,6 +24,7 @@ public class TheCatSC2Bot {
         private final int zealotsMax = 25;
         private final int stalkersMax = 20;
         private final int immortalsMax = 5;
+        private final int observerMax = 3;
         private boolean warpgate = false;
 
         @Override
@@ -100,7 +102,7 @@ public class TheCatSC2Bot {
                 return false;
             }
 
-            if(countUnitType(Units.PROTOSS_ROBOTICS_FACILITY) > 2){
+            if(countUnitType(Units.PROTOSS_ROBOTICS_FACILITY) >= 2){
                 return false;
             }
 
@@ -154,11 +156,8 @@ public class TheCatSC2Bot {
                 }
                 else if(harvester.getIdealHarvesters().get() > harvester.getAssignedHarvesters().get()){
                     if(countUnitType(Units.PROTOSS_PROBE) > 7){
-//                        System.out.println("Attempting to send probe");
                         Unit probe = getRandomUnit(Units.PROTOSS_PROBE).get().unit();
-//                        System.out.println(probe);
-                        Point2d point2d = harvester.getPosition().toPoint2d();
-//                        System.out.println(point2d);
+;
                         try {
                             actions().unitCommand(probe, Abilities.SMART, harvester, false);
                         } catch (Exception e) {
@@ -167,6 +166,21 @@ public class TheCatSC2Bot {
                         }
                     }
                 }
+            }
+        }
+
+        private Optional<Point2d> findEnemyPosition() {
+            ResponseGameInfo gameInfo = observation().getGameInfo();
+
+            Optional<StartRaw> startRaw = gameInfo.getStartRaw();
+            if (startRaw.isPresent()) {
+                Set<Point2d> startLocations = new HashSet<>(startRaw.get().getStartLocations());
+                startLocations.remove(observation().getStartLocation().toPoint2d());
+                if (startLocations.isEmpty()) return Optional.empty();
+                return Optional.of(new ArrayList<>(startLocations)
+                        .get(ThreadLocalRandom.current().nextInt(startLocations.size())));
+            } else {
+                return Optional.empty();
             }
         }
 
@@ -229,7 +243,10 @@ public class TheCatSC2Bot {
         }
 
         private void trainRoboUnit(Unit unit){
-            if (countUnitType(Units.PROTOSS_IMMORTAL) < immortalsMax) {
+            if (countUnitType(Units.PROTOSS_OBSERVER) < observerMax) {
+                actions().unitCommand(unit, Abilities.TRAIN_OBSERVER, false);
+            }
+            else if (countUnitType(Units.PROTOSS_IMMORTAL) < immortalsMax) {
                 actions().unitCommand(unit, Abilities.TRAIN_IMMORTAL, false);
             }
         }
