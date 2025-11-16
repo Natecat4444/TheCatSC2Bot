@@ -228,6 +228,10 @@ public class TheCatSC2Bot {
                 case PROTOSS_ROBOTICS_FACILITY:
                     trainRoboUnit(unit);
                     break;
+                case PROTOSS_OBSERVER:
+                    findEnemyPosition().ifPresent(point2d -> actions().unitCommand(unit, Abilities.MOVE, point2d, false));
+                case PROTOSS_IMMORTAL:
+                    attack();
                 default:
                     break;
             }
@@ -257,6 +261,41 @@ public class TheCatSC2Bot {
             }
             else if(countUnitType(Units.PROTOSS_STALKER) < stalkersMax){
                 //todo
+            }
+        }
+
+        private List<Unit> getArmy(){
+            System.out.println("Gathering army");
+            List<Unit> army = new ArrayList<>();
+            List<UnitInPool> zealots = observation().getUnits(Alliance.SELF, UnitInPool.isUnit(Units.PROTOSS_ZEALOT));
+
+            for (UnitInPool zealot: zealots){
+                Unit z = zealot.unit();
+                army.add(z);
+            }
+            List<UnitInPool> stalkers = observation().getUnits(Alliance.SELF, UnitInPool.isUnit(Units.PROTOSS_STALKER));
+
+            for (UnitInPool stalker: stalkers){
+                Unit z = stalker.unit();
+                army.add(z);
+            }
+
+            List<UnitInPool> immortals = observation().getUnits(Alliance.SELF, UnitInPool.isUnit(Units.PROTOSS_IMMORTAL));
+
+            for (UnitInPool immortal: immortals){
+                Unit z = immortal.unit();
+                army.add(z);
+            }
+
+            System.out.println("Army has "+army.size()+" units");
+            return army;
+        }
+
+        private void attack(){
+            if(countUnitType(Units.PROTOSS_ZEALOT) >= zealotsMax && countUnitType(Units.PROTOSS_STALKER) >= stalkersMax && countUnitType(Units.PROTOSS_IMMORTAL) >= 2){
+                List<Unit> army = getArmy();
+                Point2d point2d = findEnemyPosition().get();
+                actions().unitCommand(army, Abilities.ATTACK_ATTACK, point2d, false);
             }
         }
 
