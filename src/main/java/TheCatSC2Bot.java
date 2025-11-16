@@ -28,6 +28,8 @@ public class TheCatSC2Bot {
         @Override
         public void onGameStart(){
             System.out.println("THE CATS OF THE VOID WILL CLAIM ALL");
+            UnitType unitType = Units.PROTOSS_PROBE;
+            System.out.println(unitType.getAbilities());
         }
 
         @Override
@@ -39,10 +41,12 @@ public class TheCatSC2Bot {
             tryBuildForge();
             tryBuildTwilightCouncil();
             tryBuildAssimilator();
+            tryBuildRobofacility();
+            mineGeysers();
         }
 
         private boolean tryBuildPylon() {
-            if(observation().getFoodUsed() <= observation().getFoodCap() - 2){
+            if(observation().getFoodUsed() <= observation().getFoodCap() - 4){
                 return false;
             }
 
@@ -59,8 +63,10 @@ public class TheCatSC2Bot {
             }
 
             Optional<UnitInPool> unitInPool = getRandomUnit(Units.PROTOSS_PROBE);
+            Optional<UnitInPool> unitInPool1 =getRandomUnit(Units.PROTOSS_NEXUS);
             if(unitInPool.isPresent()){
                 Unit unit = unitInPool.get().unit();
+                Unit unit1 = unitInPool1.get().unit();
                 findNearestGasGeyser(unit.getPosition().toPoint2d()).ifPresent(gasPath -> actions().unitCommand(unit, Abilities.BUILD_ASSIMILATOR, gasPath, false));
             }
 
@@ -89,6 +95,18 @@ public class TheCatSC2Bot {
             return tryBuildStructure(Abilities.BUILD_CYBERNETICS_CORE, Units.PROTOSS_PROBE);
         }
 
+        private boolean tryBuildRobofacility(){
+            if(countUnitType(Units.PROTOSS_CYBERNETICS_CORE) == 0){
+                return false;
+            }
+
+            if(countUnitType(Units.PROTOSS_ROBOTICS_FACILITY) > 2){
+                return false;
+            }
+
+            return tryBuildStructure(Abilities.BUILD_ROBOTICS_FACILITY, Units.PROTOSS_PROBE);
+        }
+
         private boolean tryBuildForge(){
             if(countUnitType(Units.PROTOSS_FORGE) >= 1){
                 return false;
@@ -98,7 +116,7 @@ public class TheCatSC2Bot {
         }
 
         private boolean tryBuildTwilightCouncil(){
-            if(countUnitType(Units.PROTOSS_CYBERNETICS_CORE) > 0){
+            if(countUnitType(Units.PROTOSS_CYBERNETICS_CORE) == 0){
                 return false;
             }
 
@@ -123,6 +141,35 @@ public class TheCatSC2Bot {
             return false;
         }
 
+        private void mineGeysers(){
+            UnitType type = Units.PROTOSS_ASSIMILATOR;
+            List <UnitInPool> assimilators =observation().getUnits(Alliance.SELF, UnitInPool.isUnit(type));
+//            System.out.println("Mine Geysers");
+
+            for(UnitInPool assimilator : assimilators){
+                Unit harvester = assimilator.getUnit().get();
+                if(harvester.getVespeneContents().get() == 0){
+//                    System.out.println("No gas remaining");
+                    break;
+                }
+                else if(harvester.getIdealHarvesters().get() > harvester.getAssignedHarvesters().get()){
+                    if(countUnitType(Units.PROTOSS_PROBE) > 7){
+//                        System.out.println("Attempting to send probe");
+                        Unit probe = getRandomUnit(Units.PROTOSS_PROBE).get().unit();
+//                        System.out.println(probe);
+                        Point2d point2d = harvester.getPosition().toPoint2d();
+//                        System.out.println(point2d);
+                        try {
+                            actions().unitCommand(probe, Abilities.SMART, harvester, false);
+                        } catch (Exception e) {
+                            System.out.println("Error occured");
+                            System.out.println(e.toString());
+                        }
+                    }
+                }
+            }
+        }
+
         private Predicate<UnitInPool> doesBuildWith(Ability ability){
             return unitInPool -> unitInPool.unit().getOrders().stream().anyMatch(unitOrder -> ability.equals(unitOrder.getAbility()));
         }
@@ -137,6 +184,7 @@ public class TheCatSC2Bot {
             Unit unit = unitInPool.unit();
             switch ((Units) unit.getType()){
                 case PROTOSS_NEXUS:
+                    System.out.println(unit.getAssignedHarvesters().get());
                     if(unit.getIdealHarvesters().get() > unit.getAssignedHarvesters().get()) {
                         actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
                     }
@@ -145,11 +193,13 @@ public class TheCatSC2Bot {
                     findNearestMineralPatch(unit.getPosition().toPoint2d()).ifPresent(mineralPath -> actions().unitCommand(unit, Abilities.SMART, mineralPath, false));
                     break;
                 case PROTOSS_ASSIMILATOR:
+                    System.out.println("Protoss Assimilar "+unit.getAssignedHarvesters().get());
                     break;
                 case PROTOSS_CYBERNETICS_CORE:
-                    if(!warpgate){
-                        actions().unitCommand(unit, Abilities.RESEARCH_WARP_GATE, false);
-                    }
+//                    if(!warpgate){
+//                        actions().unitCommand(unit, Abilities.RESEARCH_WARP_GATE, false);
+//                    }
+                    //Enavle when warp in units works
                     break;
                 case PROTOSS_WARP_GATE:
                     warpUnit(unit);
@@ -161,6 +211,9 @@ public class TheCatSC2Bot {
                     else{
                         trainUnit(unit);
                     }
+                case PROTOSS_ROBOTICS_FACILITY:
+                    trainRoboUnit(unit);
+                    break;
                 default:
                     break;
             }
@@ -175,14 +228,17 @@ public class TheCatSC2Bot {
             }
         }
 
+        private void trainRoboUnit(Unit unit){
+            if (countUnitType(Units.PROTOSS_IMMORTAL) < immortalsMax) {
+                actions().unitCommand(unit, Abilities.TRAIN_IMMORTAL, false);
+            }
+        }
+
         private void warpUnit(Unit unit){
             if(countUnitType(Units.PROTOSS_ZEALOT) < zealotsMax){
-                //todo
+                actions().unitCommand(unit, Abilities.TRAIN_WARP_ZEALOT, false);
             }
             else if(countUnitType(Units.PROTOSS_STALKER) < stalkersMax){
-                //todo
-            }
-            else if (countUnitType(Units.PROTOSS_IMMORTAL) < immortalsMax) {
                 //todo
             }
         }
