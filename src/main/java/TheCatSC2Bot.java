@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 public class TheCatSC2Bot {
-    private static class Bot extends S2Agent {
+    static class Bot extends S2Agent {
 
         private final int zealotsMax = 25;
         private final int stalkersMax = 20;
@@ -342,8 +342,14 @@ public class TheCatSC2Bot {
             return observation().getUnits(Alliance.SELF, UnitInPool.isUnit(unitType)).size();
         }
     }
-    public static void main(String[] args) {
+
+    public static Bot getBot(){
         Bot bot = new Bot();
+        return bot;
+    }
+
+    public static void main(String[] args) {
+        Bot bot = getBot();
         S2Coordinator s2Coordinator = S2Coordinator.setup()
                 .loadSettings(args)
                 .setParticipants(
