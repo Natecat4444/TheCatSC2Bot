@@ -350,16 +350,5 @@ public class TheCatSC2Bot {
 
     public static void main(String[] args) {
         Bot bot = getBot();
-        S2Coordinator s2Coordinator = S2Coordinator.setup()
-                .loadSettings(args)
-                .setParticipants(
-                        S2Coordinator.createParticipant(Race.PROTOSS, bot),
-                        S2Coordinator.createComputer(Race.ZERG, Difficulty.VERY_EASY))
-                .launchStarcraft()
-                .startGame(BattlenetMap.of("Cloud Kingdom LE"));
-        while (s2Coordinator.update()){
-
-        }
-        s2Coordinator.quit();
     }
 }
