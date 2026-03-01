@@ -47,7 +47,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>runCatLocal</mainClass>
+                            <mainClass>runCatLadder</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
