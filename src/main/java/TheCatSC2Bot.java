@@ -199,7 +199,7 @@ public class TheCatSC2Bot {
             switch ((Units) unit.getType()){
                 case PROTOSS_NEXUS:
                     System.out.println(unit.getAssignedHarvesters().get());
-                    if(unit.getIdealHarvesters().get() > unit.getAssignedHarvesters().get()) {
+                    if(16 >= unit.getAssignedHarvesters().get()) {
                         actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
                     }
                     break;
