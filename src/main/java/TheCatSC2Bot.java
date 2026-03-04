@@ -37,13 +37,15 @@ public class TheCatSC2Bot {
         @Override
         public void onStep(){
 //            System.out.println(observation().getGameLoop());
+            tryBuildAssimilator();
             tryBuildPylon();
             tryBuildGateway();
-            tryBuildCybercore();
-            tryBuildForge();
-            tryBuildTwilightCouncil();
-            tryBuildAssimilator();
-            tryBuildRobofacility();
+            if(countUnitType(Units.PROTOSS_ASSIMILATOR) >= countUnitType(Units.PROTOSS_NEXUS)*2) {
+                tryBuildCybercore();
+                tryBuildForge();
+                tryBuildTwilightCouncil();
+                tryBuildRobofacility();
+            }
             mineGeysers();
         }
 
@@ -60,7 +62,9 @@ public class TheCatSC2Bot {
         }
 
         private void tryBuildAssimilator(){
+            System.out.println("Try build assim");
             if(countUnitType(Units.PROTOSS_ASSIMILATOR) >= countUnitType(Units.PROTOSS_NEXUS)*2){
+                System.out.println("Two assim present");
                 return;
             }
 
@@ -318,7 +322,7 @@ public class TheCatSC2Bot {
 
         private Optional<Unit> findNearestGasGeyser(Point2d start){
             List<UnitInPool> units = observation().getUnits(Alliance.NEUTRAL);
-            double distance = Double.MAX_VALUE;
+            double distance = 10;
             Unit target = null;
             for (UnitInPool unitInPool : units) {
                 Unit unit = unitInPool.unit();
