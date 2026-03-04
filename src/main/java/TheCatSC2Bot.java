@@ -356,8 +356,4 @@ public class TheCatSC2Bot {
         Bot bot = new Bot();
         return bot;
     }
-
-    public static void main(String[] args) {
-        Bot bot = getBot();
-    }
-}
+ }
