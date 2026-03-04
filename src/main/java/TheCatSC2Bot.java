@@ -13,6 +13,7 @@ import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Unit;
+import utils.VersionUtil;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,6 +31,8 @@ public class TheCatSC2Bot {
         @Override
         public void onGameStart(){
             System.out.println("THE CATS OF THE VOID WILL CLAIM ALL");
+            String version = VersionUtil.getVersion();
+            System.out.println("Version "+version);
             UnitType unitType = Units.PROTOSS_PROBE;
             System.out.println(unitType.getAbilities());
         }
@@ -62,9 +65,9 @@ public class TheCatSC2Bot {
         }
 
         private void tryBuildAssimilator(){
-            System.out.println("Try build assim");
+//            System.out.println("Try build assim");
             if(countUnitType(Units.PROTOSS_ASSIMILATOR) >= countUnitType(Units.PROTOSS_NEXUS)*2){
-                System.out.println("Two assim present");
+//                System.out.println("Two assim present");
                 return;
             }
 
