@@ -1,6 +1,7 @@
 import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.S2Coordinator;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.action.ActionChat;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Ability;
 import com.github.ocraft.s2client.protocol.data.UnitType;
@@ -13,6 +14,7 @@ import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Unit;
+import utils.ChatUtil;
 import utils.VersionUtil;
 
 import java.util.*;
@@ -30,11 +32,11 @@ public class TheCatSC2Bot {
 
         @Override
         public void onGameStart(){
-            System.out.println("THE CATS OF THE VOID WILL CLAIM ALL");
-            String version = VersionUtil.getVersion();
-            System.out.println("Version "+version);
-            UnitType unitType = Units.PROTOSS_PROBE;
-            System.out.println(unitType.getAbilities());
+            ChatUtil chat = new ChatUtil();
+            actions().sendChat(chat.battlecry(), ActionChat.Channel.BROADCAST);
+
+            actions().sendChat(chat.version(), ActionChat.Channel.BROADCAST);
+
         }
 
         @Override
