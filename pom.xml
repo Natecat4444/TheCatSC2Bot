@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.example</groupId>
   <artifactId>TheCatSC2Bot</artifactId>
-  <version>1.2</version>
+  <version>1.2.1</version>
     <packaging>jar</packaging>
   <name>Archetype - TheCatSC2Bot</name>
   <url>http://maven.apache.org</url>
@@ -16,6 +16,7 @@
     </dependency>
   </dependencies>
     <build>
+        <finalName>TheCatSC2Bot</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
