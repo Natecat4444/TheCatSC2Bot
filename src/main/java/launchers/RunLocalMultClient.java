@@ -1,10 +1,12 @@
+package launchers;
+
+import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.S2Coordinator;
 import com.github.ocraft.s2client.protocol.game.*;
-import com.github.ocraft.s2client.bot.S2Agent;
 
 public class RunLocalMultClient {
     public static void main(String[] args){
-        TheCatSC2Bot.Bot bot = TheCatSC2Bot.getBot();
+        S2Agent bot = null;
         MultiplayerOptions m = MultiplayerOptions.multiplayerSetup()
                 .sharedPort(5000)
                 .serverPort(PortSet.of(5001, 5002)).clientPorts(
