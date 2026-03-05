@@ -119,7 +119,7 @@ public class TheCatSC2Bot {
         }
 
         private boolean tryBuildForge(){
-            if(countUnitType(Units.PROTOSS_FORGE) >= 1){
+            if(countUnitType(Units.PROTOSS_FORGE) >= 1 || countUnitType(Units.PROTOSS_CYBERNETICS_CORE) < 1 || countUnitType(Units.PROTOSS_GATEWAY) < 3){
                 return false;
             }
 
@@ -208,7 +208,7 @@ public class TheCatSC2Bot {
             switch ((Units) unit.getType()){
                 case PROTOSS_NEXUS:
                     System.out.println(unit.getAssignedHarvesters().get());
-                    if(16 >= unit.getAssignedHarvesters().get()) {
+                    if(unit.getIdealHarvesters().get() >= unit.getAssignedHarvesters().get()) {
                         actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
                     }
                     break;
