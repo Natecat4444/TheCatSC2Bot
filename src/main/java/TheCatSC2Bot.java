@@ -207,8 +207,8 @@ public class TheCatSC2Bot {
             Unit unit = unitInPool.unit();
             switch ((Units) unit.getType()){
                 case PROTOSS_NEXUS:
-                    System.out.println(unit.getAssignedHarvesters().get());
-                    if(unit.getIdealHarvesters().get() >= unit.getAssignedHarvesters().get()) {
+                    System.out.println("Assigned: "+unit.getAssignedHarvesters().get()+" ideal: "+unit.getIdealHarvesters().get());
+                    if(unit.getIdealHarvesters().get()+6 >= unit.getAssignedHarvesters().get()) {
                         actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
                     }
                     break;
