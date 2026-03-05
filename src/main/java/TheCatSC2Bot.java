@@ -43,6 +43,12 @@ public class TheCatSC2Bot {
         public void onStep(){
 //            System.out.println(observation().getGameLoop());
 
+            List<UnitInPool> nexi = getUnitsByType(Units.PROTOSS_NEXUS);
+
+            for(UnitInPool nexus : nexi){
+                trainProbe(nexus.unit());
+            }
+
             tryBuildAssimilator();
             tryBuildPylon();
             tryBuildGateway();
