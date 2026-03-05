@@ -42,6 +42,7 @@ public class TheCatSC2Bot {
         @Override
         public void onStep(){
 //            System.out.println(observation().getGameLoop());
+
             tryBuildAssimilator();
             tryBuildPylon();
             tryBuildGateway();
@@ -206,12 +207,6 @@ public class TheCatSC2Bot {
         public void onUnitIdle(UnitInPool unitInPool){
             Unit unit = unitInPool.unit();
             switch ((Units) unit.getType()){
-                case PROTOSS_NEXUS:
-                    System.out.println("Assigned: "+unit.getAssignedHarvesters().get()+" ideal: "+unit.getIdealHarvesters().get());
-                    if(unit.getIdealHarvesters().get()+6 >= unit.getAssignedHarvesters().get()) {
-                        actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
-                    }
-                    break;
                 case PROTOSS_PROBE:
                     findNearestMineralPatch(unit.getPosition().toPoint2d()).ifPresent(mineralPath -> actions().unitCommand(unit, Abilities.SMART, mineralPath, false));
                     break;
@@ -246,6 +241,12 @@ public class TheCatSC2Bot {
             }
         }
 
+        private void trainProbe(Unit unit){
+            if(countUnitType(Units.PROTOSS_PROBE) < computeDesiredProbes()){
+                actions().unitCommand(unit, Abilities.TRAIN_PROBE, false);
+            }
+        }
+
         private void trainUnit(Unit unit){
             if(countUnitType(Units.PROTOSS_ZEALOT) < zealotsMax){
                 actions().unitCommand(unit, Abilities.TRAIN_ZEALOT, false);
@@ -276,20 +277,20 @@ public class TheCatSC2Bot {
         private List<Unit> getArmy(){
             System.out.println("Gathering army");
             List<Unit> army = new ArrayList<>();
-            List<UnitInPool> zealots = observation().getUnits(Alliance.SELF, UnitInPool.isUnit(Units.PROTOSS_ZEALOT));
+            List<UnitInPool> zealots = getUnitsByType(Units.PROTOSS_ZEALOT);
 
             for (UnitInPool zealot: zealots){
                 Unit z = zealot.unit();
                 army.add(z);
             }
-            List<UnitInPool> stalkers = observation().getUnits(Alliance.SELF, UnitInPool.isUnit(Units.PROTOSS_STALKER));
+            List<UnitInPool> stalkers = getUnitsByType(Units.PROTOSS_STALKER);
 
             for (UnitInPool stalker: stalkers){
                 Unit z = stalker.unit();
                 army.add(z);
             }
 
-            List<UnitInPool> immortals = observation().getUnits(Alliance.SELF, UnitInPool.isUnit(Units.PROTOSS_IMMORTAL));
+            List<UnitInPool> immortals = getUnitsByType(Units.PROTOSS_IMMORTAL);
 
             for (UnitInPool immortal: immortals){
                 Unit z = immortal.unit();
@@ -298,6 +299,11 @@ public class TheCatSC2Bot {
 
             System.out.println("Army has "+army.size()+" units");
             return army;
+        }
+
+        private List<UnitInPool> getUnitsByType(UnitType unitType){
+            List<UnitInPool> requestedunits = observation().getUnits(Alliance.SELF, UnitInPool.isUnit(unitType));
+            return requestedunits;
         }
 
         private void attack(){
@@ -342,6 +348,12 @@ public class TheCatSC2Bot {
             return Optional.ofNullable(target);
         }
 
+        private int computeDesiredProbes(){
+            int nexus = countUnitType(Units.PROTOSS_NEXUS);
+            int assim = countUnitType(Units.PROTOSS_ASSIMILATOR);
+
+            return (nexus * 16) + (assim*3);
+        }
 
         private float getRandomScalar(){
             return ThreadLocalRandom.current().nextFloat() *2 -1;
