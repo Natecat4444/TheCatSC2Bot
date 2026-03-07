@@ -14,6 +14,7 @@ import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Unit;
+import constants.MiningConstants;
 import utils.ChatUtil;
 import utils.VersionUtil;
 
@@ -343,7 +344,7 @@ public class TheCatSC2Bot {
             Unit target = null;
             for (UnitInPool unitInPool : units) {
                 Unit unit = unitInPool.unit();
-                if(unit.getType().equals(Units.NEUTRAL_VESPENE_GEYSER)) {
+                if(MiningConstants.open_geyser_types.contains(unit.getType())) {
                     double d = unit.getPosition().toPoint2d().distance(start);
                     if (d < distance) {
                         distance = d;

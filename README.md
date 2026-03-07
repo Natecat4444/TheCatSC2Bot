@@ -5,3 +5,6 @@ CHANGELOG
 
 1.2.3
  - Some refactoring, changes to probe training and build order
+
+1.2.4
+ - Handles multiple geyser types

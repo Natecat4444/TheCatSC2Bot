@@ -12,7 +12,7 @@ public class runCatLocal {
                         S2Coordinator.createParticipant(Race.PROTOSS, bot),
                         S2Coordinator.createComputer(Race.ZERG, Difficulty.VERY_EASY))
                 .launchStarcraft()
-                .startGame(BattlenetMap.of("Cloud Kingdom LE"));
+                .startGame(BattlenetMap.of("Celestial Enclave LE"));
         while (s2Coordinator.update()){
 
         }
