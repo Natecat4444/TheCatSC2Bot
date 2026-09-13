@@ -8,6 +8,7 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.BattlenetMap;
 import com.github.ocraft.s2client.protocol.game.Difficulty;
+import com.github.ocraft.s2client.protocol.game.LocalMap;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.game.raw.StartRaw;
 import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
@@ -199,6 +200,17 @@ public class TheCatSC2Bot {
             } else {
                 return Optional.empty();
             }
+        }
+
+        //Call this on init, do not use in late game
+        private Set<Point2d> baseLocations(){
+            ResponseGameInfo gameInfo = observation().getGameInfo();
+
+            LocalMap map = gameInfo.getLocalMap().get();
+            map.toSc2Api().;
+            if(startRaw.isPresent())
+            Set<Point2d> locations = new HashSet<>();
+            return locations;
         }
 
         private Predicate<UnitInPool> doesBuildWith(Ability ability){
