@@ -8,3 +8,6 @@ CHANGELOG
 
 1.2.4
  - Handles multiple geyser types
+
+1.2.5
+ - remove zealots from army

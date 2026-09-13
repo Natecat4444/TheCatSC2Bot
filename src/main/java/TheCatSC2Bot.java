@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 public class TheCatSC2Bot {
     static class Bot extends S2Agent {
 
-        private final int zealotsMax = 25;
+        private final int zealotsMax = 0;
         private final int stalkersMax = 20;
         private final int immortalsMax = 5;
         private final int observerMax = 3;
@@ -204,12 +204,17 @@ public class TheCatSC2Bot {
 
         //Call this on init, do not use in late game
         private Set<Point2d> baseLocations(){
+            //TODO
             ResponseGameInfo gameInfo = observation().getGameInfo();
-
+            Optional<StartRaw> startRaw = gameInfo.getStartRaw();
             LocalMap map = gameInfo.getLocalMap().get();
-            map.toSc2Api().;
-            if(startRaw.isPresent())
+            map.toSc2Api().getMapData();
             Set<Point2d> locations = new HashSet<>();
+            if(startRaw.isPresent()) {
+                startRaw.get();
+
+            }
+
             return locations;
         }
 
